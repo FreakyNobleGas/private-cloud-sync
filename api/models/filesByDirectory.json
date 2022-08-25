@@ -1,0 +1,12 @@
+{
+  "Files": {
+    "DirectoryA": [
+      "File1",
+      "File2"
+    ],
+    "DirectoryA/DirectoryB" : [
+      "File1",
+      "File2"
+    ]
+  }
+}
