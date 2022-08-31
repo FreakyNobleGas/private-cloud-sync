@@ -87,31 +87,33 @@ func getDirectoriesToWatch(fileName string) ([]string, error) {
 }
 
 func getFiles(nextDir string, allFiles map[string]interface{}) (map[string]interface{}, error) {
-	if allFiles[nextDir] == nil {
-		allFiles[nextDir] = make([]string, 0)
 
-	}
-	var nextDirMapping = allFiles[nextDir].([]string)
-
+	var currentDirectory = nextDir
 	err := filepath.Walk(nextDir, func(path string, info fs.FileInfo, err error) error {
+
 		if err != nil {
 			fmt.Printf("prevent panic by handling failure accessing a path %q: %v\n", path, err)
 			return err
 		}
 
+		if allFiles[nextDir] == nil {
+			allFiles[nextDir] = make([]string, 0)
+		}
+
 		if info.IsDir() {
 			if strings.Compare(nextDir, path) != 0 {
-				allFiles[path] = make(map[string]interface{})
-				getFiles(path, allFiles[path].(map[string]interface{}))
+				if allFiles[path] == nil {
+					allFiles[path] = make([]string, 0)
+				}
+				currentDirectory = path
 			}
 		} else {
-			nextDirMapping = append(nextDirMapping, path)
+			allFiles[currentDirectory] = append(allFiles[currentDirectory].([]string), path)
 		}
 
 		return nil
 	})
 
-	allFiles[nextDir] = nextDirMapping
 	if err != nil {
 		fmt.Printf("error walking the path: %v\n", err)
 	}

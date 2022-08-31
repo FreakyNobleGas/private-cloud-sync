@@ -64,22 +64,16 @@ func TestGetAllFiles(t *testing.T) {
 	var loopThroughMaps func(got map[string]interface{})
 	loopThroughMaps = func(got map[string]interface{}) {
 		for k, v := range got {
-			// TODO: Find why duplicate entry for B.A is occuring
-			log.Printf("%v\n", k)
-			log.Printf("%v\n", v)
-
 			numOfDirs += 1
 			switch v.(type) {
 			case []string:
 				for _, i := range v.([]string) {
-					//log.Printf("%v\n", i)
 					numOfFiles += 1
 					if !strings.HasSuffix(i, ".txt") {
 						t.Errorf("Value should end with .txt, but got %v\n", i)
 					}
 				}
 			case map[string]interface{}:
-				//log.Printf("%v\n", v)
 				loopThroughMaps(v.(map[string]interface{}))
 			default:
 				if !strings.HasSuffix(k, "C\\") {
